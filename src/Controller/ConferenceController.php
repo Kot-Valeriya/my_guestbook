@@ -29,12 +29,28 @@ class ConferenceController extends AbstractController {
 	}
 
 	/**
-	 * @Route("/", name="homepage")
+	 * @Route("/conference_header", name="conference_header")
 	 */
-	public function index(ConferenceRepository $conferenceRepository): Response {
-		return new Response($this->twig->render('conference/index.html.twig', [
+	public function conferenceHeader(ConferenceRepository $conferenceRepository): Response{
+
+		$response = new Response($this->twig->render('conference/header.html.twig', [
 			'conferences' => $conferenceRepository->findAll(),
 		]));
+
+		$response->setMaxAge(3600);
+		return $response;
+	}
+
+	/**
+	 * @Route("/", name="homepage")
+	 */
+	public function index(ConferenceRepository $conferenceRepository): Response{
+		$response = new Response($this->twig->render('conference/index.html.twig', [
+			'conferences' => $conferenceRepository->findAll(),
+		]));
+		$response->setSharedMaxAge(3600);
+
+		return $response;
 	}
 
 	/**
@@ -65,7 +81,8 @@ class ConferenceController extends AbstractController {
 				'user_agent' => $request->headers->get('user-agent'),
 				'referrer' => $request->headers->get('referer'),
 				'permalink' => $request->getUri(),
-			}
+			];
+
 			$this->bus->dispatch(new CommentMessage($comment->getId(), $context));
 
 			return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]);
