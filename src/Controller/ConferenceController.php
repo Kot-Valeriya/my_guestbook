@@ -18,7 +18,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
 class ConferenceController extends AbstractController {
-
 	private $twig;
 	private $entityManager;
 	private $bus;
@@ -33,8 +32,7 @@ class ConferenceController extends AbstractController {
 	 * @Route("/", name="homepage")
 	 */
 	public function index(ConferenceRepository $conferenceRepository): Response {
-
-		return new Response($this->twig->render('conference\index.html.twig', [
+		return new Response($this->twig->render('conference/index.html.twig', [
 			'conferences' => $conferenceRepository->findAll(),
 		]));
 	}
@@ -43,14 +41,12 @@ class ConferenceController extends AbstractController {
 	 * @Route("/conference/{slug}", name="conference")
 	 */
 	public function show(Request $request, Conference $conference, CommentRepository $commentRepository, string $photoDir): Response{
-
 		$comment = new Comment();
 		$form = $this->createForm(CommentFormType::class, $comment);
-
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
-			$comment->setConference($conference);
 
+			$comment->setConference($conference);
 			if ($photo = $form['photo']->getData()) {
 				$filename = bin2hex(random_bytes(6)) . '.' . $photo->guessExtension();
 				try {
@@ -59,7 +55,6 @@ class ConferenceController extends AbstractController {
 					// unable to upload the photo, give up
 				}
 				$comment->setPhotoFilename($filename);
-
 			}
 
 			$this->entityManager->persist($comment);
@@ -70,7 +65,7 @@ class ConferenceController extends AbstractController {
 				'user_agent' => $request->headers->get('user-agent'),
 				'referrer' => $request->headers->get('referer'),
 				'permalink' => $request->getUri(),
-			];
+			}
 			$this->bus->dispatch(new CommentMessage($comment->getId(), $context));
 
 			return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]);
@@ -79,7 +74,7 @@ class ConferenceController extends AbstractController {
 		$offset = max(0, $request->query->getInt('offset', 0));
 		$paginator = $commentRepository->getCommentPaginator($conference, $offset);
 
-		return new Response($this->twig->render('conference\show.html.twig', [
+		return new Response($this->twig->render('conference/show.html.twig', [
 			'conference' => $conference,
 			'comments' => $paginator,
 			'previous' => $offset - CommentRepository::PAGINATOR_PER_PAGE,
