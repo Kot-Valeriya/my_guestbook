@@ -362,6 +362,18 @@
             "./config/packages/test/monolog.yaml"
         ]
     },
+    "symfony/notifier": {
+        "version": "5.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.0",
+            "ref": "c31585e252b32fe0e1f30b1f256af553f4a06eb9"
+        },
+        "files": [
+            "./config/packages/notifier.yaml"
+        ]
+    },
     "symfony/options-resolver": {
         "version": "v5.0.11"
     },
@@ -462,6 +474,15 @@
     },
     "symfony/string": {
         "version": "v5.0.11"
+    },
+    "symfony/telegram-notifier": {
+        "version": "5.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.0",
+            "ref": "5cf5c19e8fdcbf922de680cdf8d65fa7d77758ae"
+        }
     },
     "symfony/test-pack": {
         "version": "v1.0.7"
